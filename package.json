@@ -2,7 +2,7 @@
   "$schema": "https://www.raycast.com/schemas/extension.json",
   "name": "capacities",
   "title": "Capacities",
-  "description": "Enhance Capacities with this Raycast extension.",
+  "description": "Capacities within Raycast, quick access to your spaces and objects.",
   "icon": "command-icon.png",
   "author": "mirkopoloni",
   "categories": [
