@@ -9,16 +9,40 @@
     "Productivity"
   ],
   "license": "MIT",
+  "preferences": [
+    {
+      "name": "bearerToken",
+      "type": "password",
+      "title": "Bearer Token",
+      "description": "Your personal bearer token to access Capacities API",
+      "placeholder": "See README.md for setup",
+      "required": true
+    }
+  ],
   "commands": [
     {
-      "name": "index",
+      "name": "show-spaces",
       "title": "Show Spaces",
       "description": "Show your spaces",
+      "mode": "view"
+    },
+    {
+      "name": "search-content",
+      "title": "Search content",
+      "description": "Search content within your spaces",
+      "mode": "view"
+    },
+    {
+      "name": "create-weblink",
+      "title": "Create weblink",
+      "description": "Create a weblink",
       "mode": "view"
     }
   ],
   "dependencies": {
-    "@raycast/api": "^1.68.1"
+    "@raycast/api": "^1.68.1",
+    "@raycast/utils": "^1.12.5",
+    "axios": "^1.6.7"
   },
   "devDependencies": {
     "@raycast/eslint-config": "^1.0.6",
