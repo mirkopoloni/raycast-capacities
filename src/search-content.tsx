@@ -1,8 +1,18 @@
-import { Detail, List, ActionPanel, Action, getPreferenceValues, openExtensionPreferences } from "@raycast/api";
+import {
+  Detail,
+  List,
+  ActionPanel,
+  Action,
+  getPreferenceValues,
+  openExtensionPreferences,
+  showToast,
+  Toast,
+} from "@raycast/api";
 import { useFetch } from "@raycast/utils";
 import { useEffect, useState } from "react";
 import OpenInCapacities from "./components/OpenInCapacities";
 import { checkCapacitiesApp } from "./helpers/isCapacitiesInstalled";
+import axios from "axios";
 
 interface Preferences {
   bearerToken: string;
@@ -56,12 +66,12 @@ export default function Command() {
   }, []);
   const markdown = "Bearer token incorrect. Please update it in extension preferences and try again.";
 
-  const [searchText, setSearchText] = useState("");
-
   let spaces: Space[] = [];
-  let spaceIDs: string[] = [];
+  const [spaceIDs, setSpaceIDs] = useState<string[]>([]);
+  const [searchText, setSearchText] = useState<string>("");
+  const [results, setResults] = useState<any[]>();
 
-  const { data } = useFetch("https://api.capacities.io/spaces", {
+  const { data, error, isLoading } = useFetch("https://api.capacities.io/spaces", {
     headers: {
       accept: "application/json",
       Authorization: `Bearer ${preferences.bearerToken}`,
@@ -69,34 +79,47 @@ export default function Command() {
   });
 
   spaces = data?.spaces || [];
-  spaceIDs = spaces.map((space) => space.id);
 
-  // How many items will be loaded? Does the backend have a limit?
+  useEffect(() => {
+    setSpaceIDs(spaces.map((space) => space.id));
+  }, []);
+
+  useEffect(() => {
+    searchContent();
+  }, [searchText, spaceIDs]);
+
+  // TODO: How many items will be loaded? Does the backend have a limit?
   // Should we expose this to the user/settings?
-  const {
-    isLoading,
-    data: dataSearch,
-    error,
-  } = useFetch("https://api.capacities.io/search", {
-    method: "POST",
-    body: JSON.stringify({
-      mode: "title",
-      searchTerm: searchText,
-      spaceIds: spaceIDs,
-    }),
-    headers: {
-      accept: "application/json",
-      Authorization: `Bearer ${preferences.bearerToken}`,
-      "Content-Type": "application/json",
-    },
-    keepPreviousData: true,
-  });
+  const searchContent = () => {
+    axios
+      .post(
+        "https://api.capacities.io/search",
+        {
+          mode: "title",
+          searchTerm: searchText,
+          spaceIds: spaceIDs,
+        },
+        {
+          headers: {
+            accept: "application/json",
+            Authorization: `Bearer ${preferences.bearerToken}`,
+            "Content-Type": "application/json",
+          },
+        },
+      )
+      .then((response) => {
+        setResults(response.data.results);
+      })
+      .catch((error) => {
+        showToast({ style: Toast.Style.Failure, title: "Something went wrong", message: error.message });
+      });
+  };
 
   const onSpaceChange = (newValue: string) => {
     if (newValue === "all") {
-      spaceIDs = spaces.map((space) => space.id);
+      setSpaceIDs(spaces.map((space) => space.id));
     } else {
-      spaceIDs = [newValue];
+      setSpaceIDs([newValue]);
     }
   };
 
@@ -116,10 +139,10 @@ export default function Command() {
       throttle
       searchBarAccessory={<SpaceDropdown spaces={spaces} onSpaceChange={onSpaceChange} />}
     >
-      {searchText === "" || dataSearch?.results.length === 0 ? (
+      {searchText === "" || !results || results.length === 0 ? (
         <List.EmptyView title="Type something to get started" />
       ) : (
-        dataSearch.results
+        results
           .filter((result) => result.title)
           .map((result) => {
             // TODO: remove this
@@ -131,16 +154,6 @@ export default function Command() {
                 accessories={[
                   {
                     // TODO: Add icon/colors for each content type
-                    // and check if we can display the custom type created by the user.
-                    // Some have stranges structureIds like:
-                    // {
-                    // spaceId: 'd38be211-54c0-4675-af4a-435e48559631',
-                    // id: '49c81a7b-b87c-48db-b849-8d261735824a',
-                    // structureId: 'b5eb756d-5166-4055-bb8f-83d8bf065dc0',
-                    // title: 'Zettel #1',
-                    // highlights: [ { context: [Object], snippets: [Array] } ]
-                    // }
-                    // It happens for zettel and projects.
                     // Get infos from space-info endpoint.
                     // TODO: add spaceName to content search if all spaces are selected
                     // TODO: show space selection only if more than one space
