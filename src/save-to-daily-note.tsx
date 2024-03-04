@@ -97,7 +97,7 @@ export default function Command() {
         {spaces && spaces.map((space) => <Form.Dropdown.Item key={space.id} value={space.id} title={space.title} />)}
       </Form.Dropdown>
       <Form.Separator />
-      <Form.TextArea title="Markdown field" {...itemProps.mdText} />
+      <Form.TextArea title="Note" {...itemProps.mdText} />
     </Form>
   );
 }

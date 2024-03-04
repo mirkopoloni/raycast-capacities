@@ -126,7 +126,7 @@ export default function Command() {
       <Form.Separator />
       <Form.TextField title="Link" placeholder="Link here" {...itemProps.value} />
       <Form.TextField title="Custom title" {...itemProps.title} />
-      <Form.TextArea title="Markdown field" {...itemProps.mdText} />
+      <Form.TextArea title="Notes" {...itemProps.mdText} />
     </Form>
   );
 }
