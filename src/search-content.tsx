@@ -7,6 +7,8 @@ import {
   openExtensionPreferences,
   showToast,
   Toast,
+  Icon,
+  Color,
 } from "@raycast/api";
 import { useFetch } from "@raycast/utils";
 import { useEffect, useState } from "react";
@@ -137,7 +139,7 @@ export default function Command() {
       isLoading={isLoading}
       onSearchTextChange={setSearchText}
       throttle
-      searchBarAccessory={<SpaceDropdown spaces={spaces} onSpaceChange={onSpaceChange} />}
+      searchBarAccessory={spaces.length > 1 ? <SpaceDropdown spaces={spaces} onSpaceChange={onSpaceChange} /> : null}
     >
       {searchText === "" || !results || results.length === 0 ? (
         <List.EmptyView title="Type something to get started" />
@@ -152,12 +154,22 @@ export default function Command() {
                 key={result.id}
                 title={result.title}
                 accessories={[
+                  // TODO: Add icon/colors for each content type
+                  // Get infos from space-info endpoint.
+                  spaceIDs.length > 1
+                    ? {
+                        tag: {
+                          value: spaces.find((space) => space.id === result.spaceId)?.title || "Unknown",
+                          color: Color.Blue,
+                        },
+                        icon: Icon.Globe,
+                      }
+                    : {},
                   {
-                    // TODO: Add icon/colors for each content type
-                    // Get infos from space-info endpoint.
-                    // TODO: add spaceName to content search if all spaces are selected
-                    // TODO: show space selection only if more than one space
-                    text: ContentType[result.structureId as keyof typeof ContentType] || "Unknown",
+                    tag: {
+                      value: ContentType[result.structureId as keyof typeof ContentType] || "Unknown",
+                      color: Color.PrimaryText,
+                    },
                   },
                 ]}
                 actions={
