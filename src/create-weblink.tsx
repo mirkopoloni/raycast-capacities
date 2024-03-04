@@ -1,6 +1,5 @@
 import {
   Detail,
-  List,
   ActionPanel,
   Action,
   getPreferenceValues,
@@ -14,7 +13,6 @@ import {
 } from "@raycast/api";
 import { FormValidation, useFetch, useForm } from "@raycast/utils";
 import { checkCapacitiesApp } from "./helpers/isCapacitiesInstalled";
-import OpenInCapacities from "./components/OpenInCapacities";
 import { useEffect } from "react";
 import { useActiveTab } from "./helpers/useActiveTab";
 import { ensureValidUrl } from "./helpers/ensureValidURL";
@@ -27,7 +25,6 @@ interface Preferences {
 interface WeblinkValues {
   spaceId: string;
   value: string;
-  title?: string;
   mdText?: string;
 }
 
@@ -57,7 +54,6 @@ export default function Command() {
           {
             spaceId: values.spaceId,
             url: validUrl,
-            titleOverwrite: values.title,
             mdText: values.mdText,
             // TODO: add tags
             // tagsExpand allarray<string><= 10 items
@@ -90,15 +86,8 @@ export default function Command() {
   useEffect(() => {
     if (activeTab) {
       setValue("value", activeTab.url);
-      setValue("title", activeTab.title);
     }
   }, [activeTab]);
-
-  useEffect(() => {
-    if (values.value === "") {
-      setValue("title", undefined);
-    }
-  }, [values.value]);
 
   const activeSpace = spaces && spaces.find((space) => space.id === values.spaceId);
 
@@ -125,7 +114,6 @@ export default function Command() {
       </Form.Dropdown>
       <Form.Separator />
       <Form.TextField title="Link" placeholder="Link here" {...itemProps.value} />
-      <Form.TextField title="Custom title" {...itemProps.title} />
       <Form.TextArea title="Notes" {...itemProps.mdText} />
     </Form>
   );
