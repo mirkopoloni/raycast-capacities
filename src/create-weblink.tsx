@@ -26,6 +26,7 @@ interface WeblinkValues {
   spaceId: string;
   value: string;
   mdText?: string;
+  tags?: string;
 }
 
 export default function Command() {
@@ -55,8 +56,7 @@ export default function Command() {
             spaceId: values.spaceId,
             url: validUrl,
             mdText: values.mdText,
-            // TODO: add tags
-            // tagsExpand allarray<string><= 10 items
+            tags: values.tags ? values.tags.split(",") : null,
           },
           {
             headers: {
@@ -114,6 +114,12 @@ export default function Command() {
       </Form.Dropdown>
       <Form.Separator />
       <Form.TextField title="Link" placeholder="Link here" {...itemProps.value} />
+      <Form.TextField
+        title="Tags"
+        placeholder="Use a comma separated list of values."
+        {...itemProps.tags}
+        info="Tags to add to the weblink. Tags need to exactly match your tag names in Capacities, otherwise they will be created. You can add a maximum of 10 tags."
+      />
       <Form.TextArea title="Notes" {...itemProps.mdText} />
     </Form>
   );
