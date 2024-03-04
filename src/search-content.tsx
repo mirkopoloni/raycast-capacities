@@ -146,12 +146,12 @@ export default function Command() {
       ) : (
         results
           .filter((result) => result.title)
-          .map((result) => {
+          .map((result, index) => {
             // TODO: remove this
             console.log(result);
             return (
               <List.Item
-                key={result.id}
+                key={result.id + index}
                 title={result.title}
                 accessories={[
                   // TODO: Add icon/colors for each content type
