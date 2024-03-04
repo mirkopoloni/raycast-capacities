@@ -21,9 +21,9 @@
   ],
   "commands": [
     {
-      "name": "show-spaces",
-      "title": "Show Spaces",
-      "description": "Show your spaces",
+      "name": "open-spaces",
+      "title": "Open Spaces",
+      "description": "Quick access to your spaces",
       "mode": "view"
     },
     {
