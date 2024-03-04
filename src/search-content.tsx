@@ -141,6 +141,9 @@ export default function Command() {
                     // highlights: [ { context: [Object], snippets: [Array] } ]
                     // }
                     // It happens for zettel and projects.
+                    // Get infos from space-info endpoint.
+                    // TODO: add spaceName to content search if all spaces are selected
+                    // TODO: show space selection only if more than one space
                     text: ContentType[result.structureId as keyof typeof ContentType] || "Unknown",
                   },
                 ]}
