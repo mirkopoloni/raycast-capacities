@@ -3,7 +3,7 @@
   "name": "capacities",
   "title": "Capacities",
   "description": "Capacities within Raycast, quick access to your spaces and objects.",
-  "icon": "command-icon.png",
+  "icon": "capacities.png",
   "author": "mirkopoloni",
   "categories": [
     "Productivity"
@@ -36,6 +36,12 @@
       "name": "create-weblink",
       "title": "Create weblink",
       "description": "Create a weblink",
+      "mode": "view"
+    },
+    {
+      "name": "save-to-daily-note",
+      "title": "Save to daily note",
+      "description": "Saves a text to today's daily note in a space. The text can be formatted in markdown. Do not use this to import large amounts of content as this could break the daily note. Use the import system of Capacities instead.",
       "mode": "view"
     }
   ],
