@@ -49,6 +49,7 @@ export default function Command() {
           {
             spaceId: values.spaceId,
             mdText: values.mdText,
+            origin: "commandPalette",
           },
           {
             headers: {
