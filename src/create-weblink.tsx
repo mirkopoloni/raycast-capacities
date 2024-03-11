@@ -80,6 +80,12 @@ export default function Command() {
     validation: {
       value: FormValidation.Required,
       spaceId: spacesDropdown.current ? FormValidation.Required : undefined,
+      tags(value) {
+        if (value && value.split(",").length > 10) {
+          return "Maximum of 10 tags allowed.";
+        }
+        return undefined;
+      },
     },
   });
 
