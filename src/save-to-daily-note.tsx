@@ -13,7 +13,7 @@ import {
 } from "@raycast/api";
 import { FormValidation, useFetch, useForm } from "@raycast/utils";
 import { checkCapacitiesApp } from "./helpers/isCapacitiesInstalled";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import axios from "axios";
 
 interface Preferences {
@@ -31,6 +31,8 @@ export default function Command() {
     checkCapacitiesApp();
   }, []);
 
+  const spacesDropdown = useRef<FormItemRef>(null);
+
   const markdown = "Bearer token incorrect. Please update it in extension preferences and try again.";
   const { isLoading, data, error } = useFetch("https://api.capacities.io/spaces", {
     headers: {
@@ -47,7 +49,7 @@ export default function Command() {
         .post(
           "https://api.capacities.io/save-to-daily-note",
           {
-            spaceId: values.spaceId,
+            spaceId: spaces.length === 1 ? spaces[0].id : values.spaceId,
             mdText: values.mdText,
             origin: "commandPalette",
           },
@@ -70,11 +72,12 @@ export default function Command() {
     },
     validation: {
       mdText: FormValidation.Required,
-      spaceId: FormValidation.Required,
+      spaceId: spacesDropdown.current ? FormValidation.Required : undefined,
     },
   });
 
-  const activeSpace = spaces && spaces.find((space) => space.id === values.spaceId);
+  const comparisonID = spaces.length === 1 ? spaces[0].id : values.spaceId;
+  const activeSpace = spaces && spaces.find((space) => space.id === comparisonID);
 
   return error ? (
     <Detail
@@ -94,10 +97,15 @@ export default function Command() {
         </ActionPanel>
       }
     >
-      <Form.Dropdown title="Space" {...itemProps.spaceId} storeValue>
-        {spaces && spaces.map((space) => <Form.Dropdown.Item key={space.id} value={space.id} title={space.title} />)}
-      </Form.Dropdown>
-      <Form.Separator />
+      {spaces.length > 1 && (
+        <>
+          <Form.Dropdown title="Space" {...itemProps.spaceId} storeValue ref={spacesDropdown}>
+            {spaces &&
+              spaces.map((space) => <Form.Dropdown.Item key={space.id} value={space.id} title={space.title} />)}
+          </Form.Dropdown>
+          <Form.Separator />
+        </>
+      )}
       <Form.TextArea title="Note" {...itemProps.mdText} />
     </Form>
   );
