@@ -141,14 +141,14 @@ export default function Command() {
       throttle
       searchBarAccessory={spaces.length > 1 ? <SpaceDropdown spaces={spaces} onSpaceChange={onSpaceChange} /> : null}
     >
-      {searchText === "" || !results || results.length === 0 ? (
+      {searchText.trim() === "" ? (
         <List.EmptyView title="Type something to get started" />
+      ) : !results || results.length === 0 ? (
+        <List.EmptyView title="No results found" icon={Icon.Number00} />
       ) : (
         results
           .filter((result) => result.title)
           .map((result, index) => {
-            // TODO: remove this
-            console.log(result);
             return (
               <List.Item
                 key={result.id + index}
