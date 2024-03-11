@@ -94,7 +94,7 @@ export default function Command() {
         </ActionPanel>
       }
     >
-      <Form.Dropdown title="Space" {...itemProps.spaceId}>
+      <Form.Dropdown title="Space" {...itemProps.spaceId} storeValue>
         {spaces && spaces.map((space) => <Form.Dropdown.Item key={space.id} value={space.id} title={space.title} />)}
       </Form.Dropdown>
       <Form.Separator />
