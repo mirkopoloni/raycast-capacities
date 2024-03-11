@@ -34,11 +34,11 @@ enum ContentType {
   MediaWebResource = "Weblink",
   MediaFile = "File",
   MediaTweet = "Tweet",
-  RootAIChat = "AIChat",
+  RootAIChat = "AI Chat",
   RootSimpleTable = "Table",
-  RootDailyNote = "DailyNote",
+  RootDailyNote = "Daily Note",
   RootTag = "Tag",
-  RootStructure = "Structure",
+  RootStructure = "Object type",
 }
 
 function SpaceDropdown(props: { spaces: Space[]; onSpaceChange: (newValue: string) => void }) {
