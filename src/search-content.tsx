@@ -156,21 +156,20 @@ export default function Command() {
                 accessories={[
                   // TODO: Add icon/colors for each content type
                   // Get infos from space-info endpoint.
+                  {
+                    tag: {
+                      value: ContentType[result.structureId as keyof typeof ContentType] || "Unknown",
+                      color: Color.Blue,
+                    },
+                  },
                   spaceIDs.length > 1
                     ? {
                         tag: {
                           value: spaces.find((space) => space.id === result.spaceId)?.title || "Unknown",
-                          color: Color.Blue,
+                          color: Color.PrimaryText,
                         },
-                        icon: Icon.Globe,
                       }
                     : {},
-                  {
-                    tag: {
-                      value: ContentType[result.structureId as keyof typeof ContentType] || "Unknown",
-                      color: Color.PrimaryText,
-                    },
-                  },
                 ]}
                 actions={
                   <ActionPanel>
