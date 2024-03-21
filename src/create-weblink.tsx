@@ -17,6 +17,7 @@ import { useEffect, useRef } from "react";
 import { useActiveTab } from "./helpers/useActiveTab";
 import { ensureValidUrl } from "./helpers/ensureValidURL";
 import axios from "axios";
+import { isValidURL } from "./helpers/isValidURL";
 
 interface Preferences {
   bearerToken: string;
@@ -78,7 +79,24 @@ export default function Command() {
         });
     },
     validation: {
-      value: FormValidation.Required,
+      value(value) {
+        if (!value || value.trim() === "") {
+          return "A link is required";
+        }
+        if (value && value.trim() !== "") {
+          value = ensureValidUrl(value);
+          setValue("value", value);
+        }
+        if (!isValidURL(value)) {
+          return "Invalid URL";
+        }
+        try {
+          new URL(value);
+        } catch (_) {
+          return "Invalid URL";
+        }
+        return undefined;
+      },
       spaceId: spacesDropdown.current ? FormValidation.Required : undefined,
       tags(value) {
         if (value && value.split(",").length > 10) {
