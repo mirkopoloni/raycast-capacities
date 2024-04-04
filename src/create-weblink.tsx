@@ -10,13 +10,14 @@ import {
   showHUD,
   PopToRootType,
   Toast,
+  closeMainWindow,
 } from "@raycast/api";
 import { FormValidation, useFetch, useForm } from "@raycast/utils";
 import { checkCapacitiesApp } from "./helpers/isCapacitiesInstalled";
 import { useEffect, useRef } from "react";
 import { useActiveTab } from "./helpers/useActiveTab";
 import { ensureValidUrl } from "./helpers/ensureValidURL";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { isValidURL } from "./helpers/isValidURL";
 
 interface Preferences {
@@ -70,13 +71,12 @@ export default function Command() {
           },
         )
         .then(() => {
-          showHUD(`Created in ${activeSpace.title}`, {
-            popToRootType: PopToRootType.Immediate,
-          });
+          showHUD(`Weblink created ✌︎`, { popToRootType: PopToRootType.Immediate });
         })
-        .catch((error) => {
-          showToast({ style: Toast.Style.Failure, title: "Something went wrong", message: error.message });
+        .catch((error: AxiosError) => {
+          showToast({ style: Toast.Style.Failure, title: error.response?.data as string });
         });
+      closeMainWindow();
     },
     validation: {
       value(value) {
@@ -115,9 +115,6 @@ export default function Command() {
     }
   }, [activeTab]);
 
-  const comparisonID = spaces.length === 1 ? spaces[0].id : values.spaceId;
-  const activeSpace = spaces && spaces.find((space) => space.id === comparisonID);
-
   return error ? (
     <Detail
       markdown={markdown}
@@ -138,7 +135,13 @@ export default function Command() {
     >
       {spaces.length > 1 && (
         <>
-          <Form.Dropdown title="Space" {...itemProps.spaceId} storeValue ref={spacesDropdown}>
+          <Form.Dropdown
+            title="Space"
+            {...itemProps.spaceId}
+            storeValue
+            onChange={() => setValue("tags", "")}
+            ref={spacesDropdown}
+          >
             {spaces &&
               spaces.map((space) => <Form.Dropdown.Item key={space.id} value={space.id} title={space.title} />)}
           </Form.Dropdown>
@@ -151,6 +154,7 @@ export default function Command() {
         placeholder="Use a comma separated list of values."
         {...itemProps.tags}
         info="Tags to add to the weblink. Tags need to exactly match your tag names in Capacities, otherwise they will be created. You can add a maximum of 10 tags."
+        storeValue
       />
       <Form.TextArea title="Notes" {...itemProps.mdText} />
     </Form>
